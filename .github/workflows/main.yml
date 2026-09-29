@@ -23,7 +23,6 @@ jobs:
           fi
           echo "Tester godkända!"
 
-          password
 
   # --- 2. PUBLICERA TILL STAGING ---
   deploy-staging:
