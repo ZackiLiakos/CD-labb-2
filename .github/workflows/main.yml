@@ -24,6 +24,8 @@ jobs:
           fi
           echo "Alla tester godkända!"
 
+          password
+
   # --- STEG 2: CD (Continuous Deployment / Publicering) ---
   deploy:
     needs: test-and-lint  # Detta jobb körs BARA om 'test-and-lint' lyckas!
