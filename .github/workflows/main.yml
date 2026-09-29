@@ -1,11 +1,32 @@
-name: Bygg och Publicera Webbplats
+name: Bygg, Testa och Publicera
 
 on:
   push:
     branches: [ main, master ]
 
 jobs:
+  # --- STEG 1: CI (Continuous Integration / Tester) ---
+  test-and-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ladda ner kod
+        uses: actions/checkout@v4
+
+      - name: Kör säkerhets- och filkontroll
+        run: |
+          echo "Kör automatiska tester på koden..."
+          # Kontrollera att index.html finns
+          test -f index.html
+          # Enkel säkerhetskoll: leta efter obehöriga skript eller känslig data (exempel)
+          if grep -q "password" index.html; then
+            echo "VARNING: Möjligt lösenord hittat i HTML-koden!"
+            exit 1
+          fi
+          echo "Alla tester godkända!"
+
+  # --- STEG 2: CD (Continuous Deployment / Publicering) ---
   deploy:
+    needs: test-and-lint  # Detta jobb körs BARA om 'test-and-lint' lyckas!
     runs-on: ubuntu-latest
     
     permissions:
@@ -14,21 +35,13 @@ jobs:
       id-token: write
 
     steps:
-    - name: Ladda ner kod
-      uses: actions/checkout@v4
+      - name: Ladda ner kod
+        uses: actions/checkout@v4
 
-    - name: Kör enklare kontroll
-      run: |
-        echo "Kontrollerar att index.html existerar..."
-        test -f index.html
-        echo "Test godkänt!"
+      - name: Ladda upp artefakt för GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
 
-    # 1. Ladda upp webbfilerna som en artefakt som Pages kan använda
-    - name: Ladda upp artefakt för GitHub Pages
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: '.'
-
-    # 2. Publicera till GitHub Pages
-    - name: Publicera till GitHub Pages
-      uses: actions/deploy-pages@v4
+      - name: Publicera till GitHub Pages
+        uses: actions/deploy-pages@v4
