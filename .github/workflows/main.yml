@@ -1,4 +1,4 @@
- name: Bygg och Publicera Webbplats
+name: Bygg och Publicera Webbplats
 
 on:
   push:
@@ -8,7 +8,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     
-    # LÄGG TILL DETTA BLOCK HÄR:
+
     permissions:
       contents: read
       pages: write
