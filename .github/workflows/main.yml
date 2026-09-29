@@ -23,6 +23,8 @@ jobs:
           fi
           echo "Tester godkända!"
 
+          password
+
   # --- 2. PUBLICERA TILL STAGING ---
   deploy-staging:
     needs: test
@@ -67,3 +69,4 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
           artifact_name: production-artifact
+          
