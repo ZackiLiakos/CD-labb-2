@@ -8,7 +8,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     
-
     permissions:
       contents: read
       pages: write
@@ -24,5 +23,12 @@ jobs:
         test -f index.html
         echo "Test godkänt!"
 
+    # 1. Ladda upp webbfilerna som en artefakt som Pages kan använda
+    - name: Ladda upp artefakt för GitHub Pages
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: '.'
+
+    # 2. Publicera till GitHub Pages
     - name: Publicera till GitHub Pages
       uses: actions/deploy-pages@v4
