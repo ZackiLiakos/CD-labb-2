@@ -22,8 +22,7 @@ jobs:
             exit 1
           fi
           echo "Tester godkända!"
-
-  # --- 2. PUBLICERA TILL STAGING ---
+# --- 2. PUBLICERA TILL STAGING ---
   deploy-staging:
     needs: test
     runs-on: ubuntu-latest
@@ -34,9 +33,10 @@ jobs:
       - name: Ladda upp artefakt för Staging
         uses: actions/upload-pages-artifact@v3
         with:
+          name: staging-artifact # Unikt namn för staging
           path: '.'
 
-      - name: Publicera till Staging (eller test-steg)
+      - name: Publicera till Staging
         run: echo "Koden är nu redo och testad i Staging-miljön!"
 
   # --- 3. PUBLICERA TILL PRODUKTION (Med skyddad miljö) ---
@@ -59,6 +59,7 @@ jobs:
       - name: Ladda upp artefakt för Produktion
         uses: actions/upload-pages-artifact@v3
         with:
+          name: production-artifact # Unikt namn för produktion
           path: '.'
 
       - name: Publicera till GitHub Pages (Produktion)
