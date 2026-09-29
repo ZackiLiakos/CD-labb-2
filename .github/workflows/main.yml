@@ -1,0 +1,22 @@
+name: Bygg och Publicera Webbplats
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Ladda ner kod
+      uses: actions/checkout@v4
+
+    - name: Kör enklare kontroll
+      run: |
+        echo "Kontrollerar att index.html existerar..."
+        test -f index.html
+        echo "Test godkänt!"
+
+    - name: Publicera till GitHub Pages
+      uses: actions/deploy-pages@v4
