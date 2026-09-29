@@ -1,35 +1,51 @@
-name: Bygg, Testa och Publicera
+name: Staging och Produktion CI/CD
 
 on:
   push:
     branches: [ main, master ]
 
 jobs:
-  # --- STEG 1: CI (Continuous Integration / Tester) ---
-  test-and-lint:
+  # --- 1. BYGG OCH TESTA (CI) ---
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Ladda ner kod
         uses: actions/checkout@v4
 
-      - name: Kör säkerhets- och filkontroll
+      - name: Kör säkerhetskontroll
         run: |
-          echo "Kör automatiska tester på koden..."
-          # Kontrollera att index.html finns
+          echo "Kontrollerar kodkvalitet..."
           test -f index.html
-          # Enkel säkerhetskoll: leta efter obehöriga skript eller känslig data (exempel)
+          # Säkerställ att inga lösenord finns kvar
           if grep -q "password" index.html; then
-            echo "VARNING: Möjligt lösenord hittat i HTML-koden!"
+            echo "FEL: Lösenord hittat i koden!"
             exit 1
           fi
-          echo "Alla tester godkända!"
+          echo "Tester godkända!"
 
-      
-
-  # --- STEG 2: CD (Continuous Deployment / Publicering) ---
-  deploy:
-    needs: test-and-lint  # Detta jobb körs BARA om 'test-and-lint' lyckas!
+  # --- 2. PUBLICERA TILL STAGING ---
+  deploy-staging:
+    needs: test
     runs-on: ubuntu-latest
+    steps:
+      - name: Ladda ner kod
+        uses: actions/checkout@v4
+
+      - name: Ladda upp artefakt för Staging
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Publicera till Staging (eller test-steg)
+        run: echo "Koden är nu redo och testad i Staging-miljön!"
+
+  # --- 3. PUBLICERA TILL PRODUKTION (Med skyddad miljö) ---
+  deploy-production:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment: 
+      name: production
+      url: https://zackiliakos.github.io/CD-labb-2/
     
     permissions:
       contents: read
@@ -40,10 +56,10 @@ jobs:
       - name: Ladda ner kod
         uses: actions/checkout@v4
 
-      - name: Ladda upp artefakt för GitHub Pages
+      - name: Ladda upp artefakt för Produktion
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
 
-      - name: Publicera till GitHub Pages
+      - name: Publicera till GitHub Pages (Produktion)
         uses: actions/deploy-pages@v4
