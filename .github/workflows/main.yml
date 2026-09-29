@@ -24,7 +24,7 @@ jobs:
           fi
           echo "Alla tester godkända!"
 
-          password
+      
 
   # --- STEG 2: CD (Continuous Deployment / Publicering) ---
   deploy:
