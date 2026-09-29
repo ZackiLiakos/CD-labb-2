@@ -52,15 +52,17 @@ jobs:
       pages: write
       id-token: write
 
-    steps:
+   steps:
       - name: Ladda ner kod
         uses: actions/checkout@v4
 
       - name: Ladda upp artefakt för Produktion
         uses: actions/upload-pages-artifact@v3
         with:
-          name: production-artifact # Unikt namn för produktion
+          name: production-artifact
           path: '.'
 
       - name: Publicera till GitHub Pages (Produktion)
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: production-artifact # Berätta för deploy-steget vilken artefakt som ska användas
